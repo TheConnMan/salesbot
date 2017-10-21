@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/TheConnMan/salesbot#readme",
   "dependencies": {
+    "@slack/client": "^3.14.1",
     "@slack/events-api": "^1.0.1",
     "express": "^4.16.2"
   }
