@@ -49,6 +49,20 @@ slackEvents.on('reaction_removed', (event)=> {
 // Handle errors (see `errorCodes` export)
 slackEvents.on('error', console.error);
 
+app.post('/set/:username', function (req, res) {
+  var memberIndex = TEAM.indexOf(req.params.username);
+  if (memberIndex == -1) {
+    res.sendStatus(404);
+  } else {
+    index = memberIndex;
+    res.sendStatus(200);
+  }
+});
+
+app.get('/get', function (req, res) {
+  res.send(getCurrentTeamMember());
+});
+
 // Start the express application
 http.createServer(app).listen(port, () => {
   console.log(`server listening on port ${port}`);
