@@ -1,0 +1,19 @@
+{
+  "name": "salesbot",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheConnMan/salesbot.git"
+  },
+  "author": "DanielBoomer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheConnMan/salesbot/issues"
+  },
+  "homepage": "https://github.com/TheConnMan/salesbot#readme"
+}
