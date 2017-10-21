@@ -10,6 +10,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
+const REACTION = process.env.EMOJI_REACTION;
+const CHANNEL = process.env.CHANNEL;
+
 // You must use a body parser for JSON before mounting the adapter
 app.use(bodyParser.json());
 
@@ -19,10 +22,14 @@ app.use('/slack/events', slackEvents.expressMiddleware());
 
 // Attach listeners to events by Slack Event "type". See: https://api.slack.com/events/message.im
 slackEvents.on('reaction_added', (event)=> {
-  console.log(`Received an added reaction event: user ${event.user} in channel ${event.item.channel} reaction: ${event.reaction}`);
+  if (ifReactionApplicable(event.reaction, event.item.channel)) {
+    console.log(`Received an added reaction event: user ${event.user} in channel ${event.item.channel} reaction: ${event.reaction}`);
+  }
 });
 slackEvents.on('reaction_removed', (event)=> {
-  console.log(`Received a removed reaction event: user ${event.user} in channel ${event.item.channel} reaction: ${event.reaction}`);
+  if (ifReactionApplicable(event.reaction, event.item.channel)) {
+    console.log(`Received a removed reaction event: user ${event.user} in channel ${event.item.channel} reaction: ${event.reaction}`);
+  }
 });
 
 // Handle errors (see `errorCodes` export)
@@ -32,3 +39,7 @@ slackEvents.on('error', console.error);
 http.createServer(app).listen(port, () => {
   console.log(`server listening on port ${port}`);
 });
+
+function ifReactionApplicable(reaction, channel) {
+  return REACTION == reaction && CHANNEL == channel;
+}
