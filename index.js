@@ -12,6 +12,9 @@ const app = express();
 
 const REACTION = process.env.EMOJI_REACTION;
 const CHANNEL = process.env.CHANNEL;
+const TEAM = process.env.TEAM_LIST.split(',');
+
+let index = 0;
 
 // You must use a body parser for JSON before mounting the adapter
 app.use(bodyParser.json());
@@ -24,11 +27,13 @@ app.use('/slack/events', slackEvents.expressMiddleware());
 slackEvents.on('reaction_added', (event)=> {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     console.log(`Received an added reaction event: user ${event.user} in channel ${event.item.channel} reaction: ${event.reaction}`);
+    console.log(getNextTeamMember())
   }
 });
 slackEvents.on('reaction_removed', (event)=> {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     console.log(`Received a removed reaction event: user ${event.user} in channel ${event.item.channel} reaction: ${event.reaction}`);
+    console.log(getPreviousTeamMember())
   }
 });
 
@@ -42,4 +47,15 @@ http.createServer(app).listen(port, () => {
 
 function ifReactionApplicable(reaction, channel) {
   return REACTION == reaction && CHANNEL == channel;
+}
+function getNextTeamMember() {
+  index += 1;
+  return getCurrentTeamMember();
+}
+function getPreviousTeamMember() {
+  index -= 1;
+  return getCurrentTeamMember();
+}
+function getCurrentTeamMember() {
+  return TEAM[index % TEAM.length];
 }
