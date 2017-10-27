@@ -108,9 +108,6 @@ function getPreviousTeamMember() {
 function getCurrentTeamMember() {
   return TEAM[index % TEAM.length];
 }
-function listCurrentTeamMember() {
-  return TEAM[(index + 1) % TEAM.length];
-}
 function sendThreadedMessage(message, channel, ts) {
   web.chat.postMessage(channel, message, {
     thread_ts: ts,
