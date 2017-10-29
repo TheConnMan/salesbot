@@ -1,3 +1,7 @@
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'info';
+
 const http = require('http');
 
 var WebClient = require('@slack/client').WebClient;
@@ -53,7 +57,7 @@ slackEvents.on('reaction_removed', (event) => {
 });
 
 // Handle errors (see `errorCodes` export)
-slackEvents.on('error', console.error);
+slackEvents.on('error', logger.error);
 
 app.post('/set/:username', function(req, res) {
   var memberIndex = TEAM.indexOf(req.params.username);
@@ -92,7 +96,7 @@ app.post(bodyParser.urlencoded({extended: true}), function(req, res) {
 
 // Start the express application
 http.createServer(app).listen(port, () => {
-  console.log(`server listening on port ${port}`);
+  logger.info(`server listening on port ${port}`);
 });
 
 function ifReactionApplicable(reaction, channel) {
@@ -114,9 +118,9 @@ function sendThreadedMessage(message, channel, ts) {
     parse: 'full'
   }, function(err) {
     if (err) {
-      console.log('Error:', err);
+      logger.error('Error:', err);
     } else {
-      console.log('Message sent!');
+      logger.debug('Message sent!');
     }
   });
 }
