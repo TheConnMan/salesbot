@@ -3,6 +3,7 @@ const logger = log4js.getLogger();
 logger.level = 'info';
 
 const http = require('http');
+const fs = require('fs');
 
 var WebClient = require('@slack/client').WebClient;
 
@@ -25,7 +26,7 @@ const REACTION = process.env.EMOJI_REACTION;
 const CHANNEL = process.env.CHANNEL;
 const TEAM = process.env.TEAM_LIST.split(',');
 
-let index = 0;
+let index = bootstrapCurrentIndex();
 
 // You must use a body parser for JSON before mounting the adapter
 app.use(bodyParser.json());
@@ -50,7 +51,7 @@ slackEvents.on('reaction_added', (event) => {
 slackEvents.on('reaction_removed', (event) => {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     let teamMember = getCurrentTeamMember();
-    index -= 1;
+    setCurrentIndex(index - 1);
     let message = `@${teamMember} YOU GET A SECOND LIFE`;
     sendThreadedMessage(message, event.item.channel, event.item.ts);
   }
@@ -64,7 +65,7 @@ app.post('/set/:username', function(req, res) {
   if (memberIndex == -1) {
     res.sendStatus(404);
   } else {
-    index = memberIndex;
+    setCurrentIndex(memberIndex);
     res.sendStatus(200);
   }
 });
@@ -104,7 +105,7 @@ function ifReactionApplicable(reaction, channel) {
 }
 
 function getNextTeamMember() {
-  index += 1;
+  setCurrentIndex(index + 1);
   return getCurrentTeamMember();
 }
 
@@ -123,4 +124,16 @@ function sendThreadedMessage(message, channel, ts) {
       logger.debug('Message sent!');
     }
   });
+}
+
+function setCurrentIndex(currentIndex) {
+  index = currentIndex;
+  fs.writeFileSync('data/index', currentIndex);
+}
+
+function bootstrapCurrentIndex() {
+  if (!fs.existsSync('data')) {
+    fs.mkdirSync('data');
+  }
+  return fs.existsSync('data/index') ? parseInt(fs.readFileSync('data/index', 'UTF-8')) : 0;
 }
