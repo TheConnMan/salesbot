@@ -1,3 +1,7 @@
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'info';
+
 const http = require('http');
 
 var WebClient = require('@slack/client').WebClient;
@@ -35,14 +39,15 @@ app.use(bodyParser.urlencoded({
 app.use('/slack/events', slackEvents.expressMiddleware());
 
 // Attach listeners to events by Slack Event "type". See: https://api.slack.com/events/message.im
-slackEvents.on('reaction_added', (event)=> {
+slackEvents.on('reaction_added', (event) => {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     let teamMember = getNextTeamMember();
     let message = `@${teamMember} YOU'RE UP!`;
     sendThreadedMessage(message, event.item.channel, event.item.ts);
   }
 });
-slackEvents.on('reaction_removed', (event)=> {
+
+slackEvents.on('reaction_removed', (event) => {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     let teamMember = getCurrentTeamMember();
     index -= 1;
@@ -52,9 +57,9 @@ slackEvents.on('reaction_removed', (event)=> {
 });
 
 // Handle errors (see `errorCodes` export)
-slackEvents.on('error', console.error);
+slackEvents.on('error', logger.error);
 
-app.post('/set/:username', function (req, res) {
+app.post('/set/:username', function(req, res) {
   var memberIndex = TEAM.indexOf(req.params.username);
   if (memberIndex == -1) {
     res.sendStatus(404);
@@ -64,59 +69,58 @@ app.post('/set/:username', function (req, res) {
   }
 });
 
-app.get('/get', function (req, res) {
+app.get('/get', function(req, res) {
   res.send(getCurrentTeamMember());
 });
 
 // Handling slah commands in Slack
-app.get('/slack', function (req, res) {
-  res.sendStatus(200)
-})
+app.get('/slack', function(req, res) {
+  res.sendStatus(200);
+});
 
-app.post(bodyParser.urlencoded({extended:true}), function(req, res) {
+app.post(bodyParser.urlencoded({extended: true}), function(req, res) {
   if (req.body.token !== VERIFY_TOKEN) {
-    return res.sendStatus(401)
+    return res.sendStatus(401);
   }
 
   if (req.body.text === 'whosnext') {
-      res.json({
-        text: TEAM[(index + 1) % TEAM.length]
-      });
+    res.json({
+      text: TEAM[(index + 1) % TEAM.length]
+    });
   } else {
     res.json({
       text: 'I need valid instructions like "whosnext"'
     });
   }
-})
+});
 
 // Start the express application
 http.createServer(app).listen(port, () => {
-  console.log(`server listening on port ${port}`);
+  logger.info(`server listening on port ${port}`);
 });
 
 function ifReactionApplicable(reaction, channel) {
   return REACTION == reaction && CHANNEL == channel;
 }
+
 function getNextTeamMember() {
   index += 1;
   return getCurrentTeamMember();
 }
-function getPreviousTeamMember() {
-  index -= 1;
-  return getCurrentTeamMember();
-}
+
 function getCurrentTeamMember() {
   return TEAM[index % TEAM.length];
 }
+
 function sendThreadedMessage(message, channel, ts) {
   web.chat.postMessage(channel, message, {
     thread_ts: ts,
     parse: 'full'
-  }, function(err, res) {
+  }, function(err) {
     if (err) {
-      console.log('Error:', err);
+      logger.error('Error:', err);
     } else {
-      console.log('Message sent!');
+      logger.debug('Message sent!');
     }
   });
 }
