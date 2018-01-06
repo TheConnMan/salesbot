@@ -1,5 +1,7 @@
 # Salesbot
 
+[![Build Status](https://travis-ci.org/TheConnMan/salesbot.svg?branch=master)](https://travis-ci.org/TheConnMan/salesbot) [![Docker Pulls](https://img.shields.io/docker/pulls/theconnman/salesbot.svg)](https://hub.docker.com/r/theconnman/salesbot/)
+
 Notifications for inbound lead rotation
 
 ## Running
