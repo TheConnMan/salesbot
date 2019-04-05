@@ -43,7 +43,7 @@ app.use('/slack/events', slackEvents.expressMiddleware());
 slackEvents.on('reaction_added', (event) => {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     let teamMember = getNextTeamMember();
-    let message = `@${teamMember} YOU'RE UP!`;
+    let message = `@${teamMember.toLowerCase()} YOU'RE UP!`;
     sendThreadedMessage(message, event.item.channel, event.item.ts);
   }
 });
@@ -52,7 +52,7 @@ slackEvents.on('reaction_removed', (event) => {
   if (ifReactionApplicable(event.reaction, event.item.channel)) {
     let teamMember = getCurrentTeamMember();
     setCurrentIndex(index - 1);
-    let message = `@${teamMember} YOU GET A SECOND LIFE`;
+    let message = `@${teamMember.toLowerCase()} YOU GET A SECOND LIFE`;
     sendThreadedMessage(message, event.item.channel, event.item.ts);
   }
 });
