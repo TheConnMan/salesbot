@@ -29,7 +29,7 @@ In your Slack application configuration, go to **Add features and functionality*
 ## Environment Variables
 
 - SLACK_VERIFICATION_TOKEN - Token used for the Slack API
-- CHANNEL - Slack channel ID to be posted to
+- CHANNELS - Slack channel IDs to listen for emoji reactions
 - EMOJI_REACTION - Name of emoji in Slack that will result in salesbot taking action
 - TEAM_LIST - Comma delimited list of Slack usernames
 - SLACK_API_TOKEN - Token used for the Slack Web API

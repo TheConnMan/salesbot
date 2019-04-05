@@ -23,7 +23,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const REACTION = process.env.EMOJI_REACTION;
-const CHANNEL = process.env.CHANNEL;
+const CHANNELS = process.env.CHANNELS.split(',');
 const TEAM = process.env.TEAM_LIST.split(',');
 
 let index = bootstrapCurrentIndex();
@@ -101,7 +101,7 @@ http.createServer(app).listen(port, () => {
 });
 
 function ifReactionApplicable(reaction, channel) {
-  return REACTION == reaction && CHANNEL == channel;
+  return REACTION == reaction && CHANNELS.includes(channel);
 }
 
 function getNextTeamMember() {
