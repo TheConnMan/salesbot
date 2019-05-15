@@ -12,9 +12,8 @@ var web = new WebClient(token);
 
 // Initialize using verification token from environment variables
 const createSlackEventAdapter = require('@slack/events-api').createSlackEventAdapter;
-const slackEvents = createSlackEventAdapter(process.env.SLACK_VERIFICATION_TOKEN);
+const slackEvents = createSlackEventAdapter(process.env.SLACK_SIGNING_SECRET);
 const port = process.env.PORT || 3000;
-const VERIFY_TOKEN = process.env.SLACK_VERIFICATION_TOKEN;
 
 // Initialize an Express application
 const express = require('express');
@@ -79,10 +78,6 @@ app.get('/slack', function(req, res) {
 });
 
 app.post(bodyParser.urlencoded({extended: true}), function(req, res) {
-  if (req.body.token !== VERIFY_TOKEN) {
-    return res.sendStatus(401);
-  }
-
   if (req.body.text === 'whosnext') {
     res.json({
       text: TEAM[(index + 1) % TEAM.length]

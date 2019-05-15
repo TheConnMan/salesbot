@@ -26,7 +26,7 @@ In your Slack application configuration, go to **Add features and functionality*
 
 ## Environment Variables
 
-- SLACK_VERIFICATION_TOKEN - Token used for the Slack API
+- SLACK_SIGNING_SECRET - Signing secret used for the Slack API
 - CHANNEL - Slack channel ID to be posted to
 - EMOJI_REACTION - Name of emoji in Slack that will result in salesbot taking action
 - TEAM_LIST - Comma delimited list of Slack usernames
